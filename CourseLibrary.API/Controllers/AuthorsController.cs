@@ -1,12 +1,13 @@
-﻿using CourseLibrary.API.Models;
-using CourseLibrary.API.Services;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using CourseLibrary.API.Helpers;
 using AutoMapper;
+using CourseLibrary.API.Models;
+using CourseLibrary.API.Services;
+using CourseLibrary.API.ResourceParameters;
 
 namespace CourseLibrary.API.Controllers
 {
@@ -27,37 +28,26 @@ namespace CourseLibrary.API.Controllers
         }
 
         [HttpGet()]
-        public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
+        [HttpHead]
+        public ActionResult<IEnumerable<AuthorDto>> GetAuthors(
+            [FromQuery] AuthorsResourceParameters authorsResourceParameters)
         {
-            var authorsFromRepo = _courseLibraryRepository.GetAuthors();
-            var authors = new List<AuthorDto>();
+            var authorsFromRepo = _courseLibraryRepository.GetAuthors(authorsResourceParameters);                      
 
-            foreach (var author in authorsFromRepo)
-            {
-                authors.Add(new AuthorDto()
-                { 
-                    Id = author.Id,
-                    Name = $"{author.FirstName} {author.LastName}",
-                    MainCategory = author.MainCategory,
-                    Age = author.DateOfBirth.GetCurrentAge()
-                });
-            }
-
-            return Ok(authors);
+            return Ok(_mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo));
         }
 
-        [HttpGet("{authorId:guid}")]
-        public IActionResult GetAuthor(Guid authorId)
+        [HttpGet("{authorId}")]
+        public ActionResult<AuthorDto> GetAuthor(Guid authorId)
         {
-            var authorFromRepo = _courseLibraryRepository.GetAuthor(authorId);
-            var authors = new AuthorDto();
+            var authorFromRepo = _courseLibraryRepository.GetAuthor(authorId);            
 
             if (authorFromRepo == null)
             {
                 return NotFound();
             }
              
-            return Ok(authorFromRepo);
+            return Ok(_mapper.Map<AuthorDto>(authorFromRepo));
         }
     }
 }

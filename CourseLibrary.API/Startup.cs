@@ -65,6 +65,17 @@ namespace CourseLibrary.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                app.UseExceptionHandler(appBuilder => 
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unxepected fault has ocurred, please try again later");
+                    });
+                });
+            }
 
             app.UseRouting();
 
