@@ -62,5 +62,12 @@ namespace CourseLibrary.API.Controllers
                 new { authorId = authorsFromRepo.Id },
                 authorsFromRepo);
         }
+
+        [HttpOptions]
+        public IActionResult GetAuthorsOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
+        }
     }
 }
