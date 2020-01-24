@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CourseLibrary.API.ValidationAttributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,23 +7,14 @@ using System.Threading.Tasks;
 
 namespace CourseLibrary.API.Models
 {
-    public class CourseForCreationDto : IValidatableObject
+    [CourseTitleMustBeDifferentFromDescriptionAttribute]
+    public class CourseForCreationDto 
     {
-        [Required]
-        [MaxLength(100)]
+        [Required(ErrorMessage = "The course title should be filled in.")]
+        [MaxLength(100, ErrorMessage = "The course title should be no more than 100 characters.")]
         public string Title { get; set; }
 
-        [MaxLength(1500)]
-        public string Description { get; set; }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            if (Title == Description)
-            {
-                yield return new ValidationResult(
-                    "The description should differ from title.",
-                    new[] { "CourseForCreationDto" });
-            }
-        }
+        [MaxLength(1500, ErrorMessage = "The course description should be no more than 1500 characters.")]
+        public string Description { get; set; }        
     }
 }

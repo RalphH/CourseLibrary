@@ -16,7 +16,8 @@ namespace CourseLibrary.API.ValidationAttributes
 
             if (course.Title == course.Description)
             {
-                return new ValidationResult(ErrorMessage,
+                return new ValidationResult(
+                    ErrorMessage,
                     new[] { nameof(CourseForCreationDto) });
             }
 
